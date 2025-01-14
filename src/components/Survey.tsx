@@ -1,9 +1,9 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { EtcInput } from "@/components/ui/etcinput";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { EtcInput } from "@/components/ui/etcinput";
-import { useState, useEffect } from "react";
-import { SurveyForm, InterestField } from "@/types/api/survey";
+import { InterestField } from "@/types/api/survey";
+import { useCallback, useEffect, useState } from "react";
 
 interface InterestItem {
   id: InterestField;
@@ -11,27 +11,67 @@ interface InterestItem {
   category?: string;
 }
 
- const interests: InterestItem[] = [
+const interests: InterestItem[] = [
   // 보안
-  { id: InterestField.SECURITY_WEBHACKING, description: "웹해킹", category: "보안" },
-  { id: InterestField.SECURITY_SYSTEMHACKING, description: "시스템해킹", category: "보안" },
-  { id: InterestField.SECURITY_REVERSING, description: "리버싱", category: "보안" },
-  { id: InterestField.SECURITY_FORENSIC, description: "포렌식", category: "보안" },
-  { id: InterestField.SECURITY_MALWARE, description: "악성코드분석", category: "보안" },
-  { id: InterestField.SECURITY_CRYPTOGRAPHY, description: "암호학", category: "보안" },
-  { id: InterestField.SECURITY_NOT_SURE, description: "분야를 아직 정하지 못 했어요", category: "보안" },
+  {
+    id: InterestField.SECURITY_WEBHACKING,
+    description: "웹해킹",
+    category: "보안",
+  },
+  {
+    id: InterestField.SECURITY_SYSTEMHACKING,
+    description: "시스템해킹",
+    category: "보안",
+  },
+  {
+    id: InterestField.SECURITY_REVERSING,
+    description: "리버싱",
+    category: "보안",
+  },
+  {
+    id: InterestField.SECURITY_FORENSIC,
+    description: "포렌식",
+    category: "보안",
+  },
+  {
+    id: InterestField.SECURITY_MALWARE,
+    description: "악성코드분석",
+    category: "보안",
+  },
+  {
+    id: InterestField.SECURITY_CRYPTOGRAPHY,
+    description: "암호학",
+    category: "보안",
+  },
+  {
+    id: InterestField.SECURITY_NOT_SURE,
+    description: "분야를 아직 정하지 못 했어요",
+    category: "보안",
+  },
   { id: InterestField.SECURITY_ETC, description: "기타", category: "보안" },
 
   // 웹
   { id: InterestField.WEB_FRONTEND, description: "프론트엔드", category: "웹" },
   { id: InterestField.WEB_BACKEND, description: "백엔드", category: "웹" },
-  { id: InterestField.WEB_NOT_SURE, description: "분야를 아직 정하지 못 했어요", category: "웹" },
+  {
+    id: InterestField.WEB_NOT_SURE,
+    description: "분야를 아직 정하지 못 했어요",
+    category: "웹",
+  },
   { id: InterestField.WEB_ETC, description: "기타", category: "웹" },
 
   // 게임
-  { id: InterestField.GAME_CLIENT, description: "클라이언트", category: "게임" },
+  {
+    id: InterestField.GAME_CLIENT,
+    description: "클라이언트",
+    category: "게임",
+  },
   { id: InterestField.GAME_SERVER, description: "서버", category: "게임" },
-  { id: InterestField.GAME_NOT_SURE, description: "분야를 아직 정하지 못 했어요", category: "게임" },
+  {
+    id: InterestField.GAME_NOT_SURE,
+    description: "분야를 아직 정하지 못 했어요",
+    category: "게임",
+  },
   { id: InterestField.GAME_ETC, description: "기타", category: "게임" },
 
   // 기타
@@ -64,7 +104,7 @@ const groupedETC = new Set([
   InterestField.SECURITY_ETC,
   InterestField.WEB_ETC,
   InterestField.GAME_ETC,
-  InterestField.ETC
+  InterestField.ETC,
 ]);
 
 function isETC(field: InterestField): boolean {
@@ -78,54 +118,54 @@ function Survey({
   onValidate: (isValid: boolean) => void;
   isValid: boolean;
 }) {
-  const [interestEtcField, setInterestEtcField] = useState<Map<InterestField,string>>(new Map);
+  const [interestEtcField, setInterestEtcField] = useState<
+    Map<InterestField, string>
+  >(new Map());
   const [registrationReason, setRegistrationReason] = useState<string>("");
   const [feedBack, setFeedBack] = useState<string>("");
-  const [checkBox, setCheckBox] = useState<Map<InterestField,boolean>>(new Map);
+  const [checkBox, setCheckBox] = useState<Map<InterestField, boolean>>(
+    new Map()
+  );
 
-  const [surveyForm, setSurveyForm] = useState<SurveyForm>();
+  // const [surveyForm, setSurveyForm] = useState<SurveyForm>();
 
-  const validateSurveyForm = () => {
+  const validateSurveyForm = useCallback(() => {
     // 가입 이유가 비어있지 않고 체크박스 중 하나라도 선택되었을 때 true
     const isRegistrationReasonValid = registrationReason.trim() !== "";
-    const isAnyCheckboxChecked = Array.from(checkBox.values()).some((isChecked) => isChecked);
-  
+    const isAnyCheckboxChecked = Array.from(checkBox.values()).some(
+      (isChecked) => isChecked
+    );
+
     if (isRegistrationReasonValid && isAnyCheckboxChecked) {
       onValidate(true);
     } else {
       onValidate(false);
     }
-  };
+  }, [registrationReason, checkBox, onValidate]);
 
   useEffect(() => {
-    setSurveyForm({
-      interestFields: Array.from(checkBox.entries())
-        .filter(([_,isChecked]) => isChecked)
-        .map(([field]) => field as InterestField),
-      interestEtc: Object.fromEntries(interestEtcField)  as Record<InterestField, string>,
-      registrationReason,
-      feedBack
-    });
+    console.log(feedBack, interestEtcField);
     validateSurveyForm();
-  },[interestEtcField, registrationReason, feedBack, checkBox]);
+  }, [validateSurveyForm, feedBack, interestEtcField]);
 
-  function checkedItemHandler(isChecked:boolean | string, id: InterestField) { 
-    if(typeof isChecked === 'boolean') {
+  function checkedItemHandler(isChecked: boolean | string, id: InterestField) {
+    if (typeof isChecked === "boolean") {
       setCheckBox((prev) => {
         const newMap = new Map(prev);
-        newMap.set(id,isChecked);
+        newMap.set(id, isChecked);
         return newMap;
-      })
+      });
     }
   }
 
   const handleFeedbackTextareaChange = (value: string) => setFeedBack(value);
-  const handleReasonTextareaChange = (value: string) => setRegistrationReason(value);
+  const handleReasonTextareaChange = (value: string) =>
+    setRegistrationReason(value);
 
-  const handleEtcTextareaChange = (field: InterestField,value: string) => {
+  const handleEtcTextareaChange = (field: InterestField, value: string) => {
     setInterestEtcField((prev) => {
-      const newMap = new Map<InterestField,string>(prev);
-      newMap.set(field,value);
+      const newMap = new Map<InterestField, string>(prev);
+      newMap.set(field, value);
       return newMap;
     });
   };
@@ -142,21 +182,31 @@ function Survey({
               <div className="mx-4 mt-2 grid gap-y-4">
                 {fields.map((field) => (
                   <>
-                  <div key={field.id} className="flex items-center space-x-2">
-                    <Checkbox id={field.id} onCheckedChange={(checked) => checkedItemHandler(checked, field.id)}  />
-                    <Label htmlFor={field.id}>{field.description}</Label>
-                    {isETC(field.id) &&
-                    <EtcInput 
-                      className={`${checkBox.get(field.id) ?
-                      "visibility-visible opacity-100" : "visibility-hidden opacity-0"}`}
-                      id={field.id}
-                      name={field.id} 
-                      placeholder="기타 관심 분야를 작성해주세요"
-                      maxLength={20}   
-                      onValueChange={(value) => handleEtcTextareaChange(field.id, value)}
-                    />
-                  }
-                  </div>
+                    <div key={field.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={field.id}
+                        onCheckedChange={(checked) =>
+                          checkedItemHandler(checked, field.id)
+                        }
+                      />
+                      <Label htmlFor={field.id}>{field.description}</Label>
+                      {isETC(field.id) && (
+                        <EtcInput
+                          className={`${
+                            checkBox.get(field.id)
+                              ? "visibility-visible opacity-100"
+                              : "visibility-hidden opacity-0"
+                          }`}
+                          id={field.id}
+                          name={field.id}
+                          placeholder="기타 관심 분야를 작성해주세요"
+                          maxLength={20}
+                          onValueChange={(value) =>
+                            handleEtcTextareaChange(field.id, value)
+                          }
+                        />
+                      )}
+                    </div>
                   </>
                 ))}
               </div>
@@ -164,13 +214,25 @@ function Survey({
           ))}
         </div>
       </div>
-      
-      <p className={`text-red-500 text-xs ${!isValid && !Array.from(checkBox.values()).some((isChecked) => isChecked)?
-        "visibility-visible opacity-100" : "visibility-hidden opacity-0"
-      }`}>적어도 하나의 분야를 선택해주세요!</p>
-      
+
+      <p
+        className={`text-red-500 text-xs ${
+          !isValid &&
+          !Array.from(checkBox.values()).some((isChecked) => isChecked)
+            ? "visibility-visible opacity-100"
+            : "visibility-hidden opacity-0"
+        }`}
+      >
+        적어도 하나의 분야를 선택해주세요!
+      </p>
+
       <div className="space-y-2">
-        <Label htmlFor="joinReason" className="flex text-xl items-end">가입 이유 <span className="text-red-500 text-xs pl-2 pb-1 ">*필수 항목입니다</span></Label>
+        <Label htmlFor="joinReason" className="flex items-end text-xl">
+          가입 이유{" "}
+          <span className="pb-1 pl-2 text-red-500 text-xs ">
+            *필수 항목입니다
+          </span>
+        </Label>
         <Textarea
           id="joinReason"
           name="joinReason"
@@ -181,8 +243,10 @@ function Survey({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="messageToManagement" className="text-xl">운영진에게 하고 싶은 말</Label>
-        
+        <Label htmlFor="messageToManagement" className="text-xl">
+          운영진에게 하고 싶은 말
+        </Label>
+
         <Textarea
           id="messageToManagement"
           name="messageToManagement"

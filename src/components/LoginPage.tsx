@@ -25,9 +25,7 @@ function LoginPage() {
           </a>
         </Button>
         <Button className="w-full" asChild>
-          <a
-            href="https://sites.google.com/dankook.ac.kr/help"
-          >
+          <a href="https://sites.google.com/dankook.ac.kr/help">
             단국대 Gmail 생성 가이드
           </a>
         </Button>

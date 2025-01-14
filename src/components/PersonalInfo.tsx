@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -9,11 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCallback, useEffect, useState } from "react";
 
 function phoneNumberCheck(number: string): boolean {
   const result = /^(01[016789]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
   return result.test(number);
-} 
+}
 
 function PersonalInfo({
   onValidate,
@@ -168,36 +168,35 @@ function PersonalInfo({
 
       {/* 전화번호 필드 */}
       <div className="space-y-2">
-  <Label htmlFor="phoneNumber">전화번호</Label>
-  <Input
-    id="phoneNumber"
-    value={phoneNumber}
-    onChange={(e) => {
-      // 숫자만 남기기
-      const rawValue = e.target.value.replace(/[^0-9]/g, "");
+        <Label htmlFor="phoneNumber">전화번호</Label>
+        <Input
+          id="phoneNumber"
+          value={phoneNumber}
+          onChange={(e) => {
+            // 숫자만 남기기
+            const rawValue = e.target.value.replace(/[^0-9]/g, "");
 
-      // 형식 적용
-      if (rawValue.length <= 3) {
-        setPhoneNumber(rawValue);
-      } else if (rawValue.length <= 7) {
-        setPhoneNumber(`${rawValue.slice(0, 3)}-${rawValue.slice(3)}`);
-      } else {
-        setPhoneNumber(
-          `${rawValue.slice(0, 3)}-${rawValue.slice(3, 7)}-${rawValue.slice(7, 11)}`
-        );
-      }
-    }}
-    placeholder="010-1234-5678"
-    className={errors.phoneNumber && showErrors ? "border-red-500" : ""}
-  />
-  {phoneNumberError && showErrors && (
-    <p className="text-red-500 text-xs">{phoneNumberError}</p>
-  )}
-  {errors.phoneNumber && showErrors && !phoneNumberError && (
-    <p className="text-red-500 text-xs">전화번호를 입력해주세요</p>
-  )}
-</div>
-
+            // 형식 적용
+            if (rawValue.length <= 3) {
+              setPhoneNumber(rawValue);
+            } else if (rawValue.length <= 7) {
+              setPhoneNumber(`${rawValue.slice(0, 3)}-${rawValue.slice(3)}`);
+            } else {
+              setPhoneNumber(
+                `${rawValue.slice(0, 3)}-${rawValue.slice(3, 7)}-${rawValue.slice(7, 11)}`
+              );
+            }
+          }}
+          placeholder="010-1234-5678"
+          className={errors.phoneNumber && showErrors ? "border-red-500" : ""}
+        />
+        {phoneNumberError && showErrors && (
+          <p className="text-red-500 text-xs">{phoneNumberError}</p>
+        )}
+        {errors.phoneNumber && showErrors && !phoneNumberError && (
+          <p className="text-red-500 text-xs">전화번호를 입력해주세요</p>
+        )}
+      </div>
 
       {/* 소속 선택 */}
       <div className="space-y-2">
@@ -209,9 +208,13 @@ function PersonalInfo({
           <SelectContent>
             <SelectItem value="software">SW융합대학 소프트웨어학과</SelectItem>
             <SelectItem value="computer">SW융합대학 컴퓨터공학과</SelectItem>
-            <SelectItem value="mobile">SW융합대학 모바일시스템공학과</SelectItem>
+            <SelectItem value="mobile">
+              SW융합대학 모바일시스템공학과
+            </SelectItem>
             <SelectItem value="security">SW융합대학 사이버보안학과</SelectItem>
-            <SelectItem value="data">SW융합대학 통계데이터사이언스학과</SelectItem>
+            <SelectItem value="data">
+              SW융합대학 통계데이터사이언스학과
+            </SelectItem>
             <SelectItem value="sw">SW융합대학 SW융합학부</SelectItem>
           </SelectContent>
         </Select>

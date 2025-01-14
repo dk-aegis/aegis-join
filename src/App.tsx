@@ -1,10 +1,9 @@
 import Everytime from "@/components/Everytime";
-import LoginPage from "@/components/LoginPage";
 import PersonalInfo from "@/components/PersonalInfo";
 import Survey from "@/components/Survey";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -18,10 +17,10 @@ function App() {
       onValidate={setIsPersonalInfoValid}
       showErrors={showErrors}
     />,
-    <Survey 
-    key="survey"
-    onValidate={setIsSurveyValid}
-    isValid={isSurveyValid}
+    <Survey
+      key="survey"
+      onValidate={setIsSurveyValid}
+      isValid={isSurveyValid}
     />,
     <Everytime key="everytime" />,
   ];
@@ -50,12 +49,11 @@ function App() {
     if (currentStep === 1 && !isPersonalInfoValid) {
       setShowErrors(true);
       return;
-    } else
+    }
     if (currentStep === 2 && !isSurveyValid) {
       setIsSurveyValid(false);
       return;
     }
-
     if (currentStep < totalSteps) {
       setShowErrors(false);
       setCurrentStep(currentStep + 1);
@@ -72,9 +70,9 @@ function App() {
     return null;
   }
 
-  if (!isAuthenticated) {
-    return <LoginPage />;
-  }
+  // if (!isAuthenticated) {
+  //   return <LoginPage />;
+  // }
 
   return (
     <div className="mx-auto w-full max-w-md px-4 py-8">
@@ -89,17 +87,19 @@ function App() {
 
       <div className="flex justify-between">
         {currentStep > 1 && (
-          <Button 
-          type="button" 
-          onClick={handlePrevious}
-          >
+          <Button type="button" onClick={handlePrevious}>
             이전
           </Button>
         )}
         {currentStep < totalSteps && (
           <Button
             type="button"
-            variant={(!isPersonalInfoValid && currentStep === 1) || (!isSurveyValid && currentStep === 2) ? "secondary" : "default"}
+            variant={
+              (!isPersonalInfoValid && currentStep === 1) ||
+              (!isSurveyValid && currentStep === 2)
+                ? "secondary"
+                : "default"
+            }
             onClick={handleNext}
             className={currentStep === 1 ? "ml-auto" : ""}
           >

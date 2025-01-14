@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'SUIT', sans-serif;
+  font-family: "SUIT", sans-serif;
 }
 
 @layer base {
